@@ -56,7 +56,7 @@ def main():
 
     if args['tagOnly'].capitalize() == 'Y':
         clr.print_info("Creating new tag")
-        new_tag = git_handler.add_tag_with_prefix(args['org'])
+        new_tag = git_handler.add_tag_with_prefix(args['org'], args['catalog'])
         if not new_tag:
             clr.print_error("Failed to create new tag")
         clr.print_success('Script ended')
@@ -65,7 +65,7 @@ def main():
     if not MANIFEST_ONLY:  # Skip generating dynamic manifest if MANIFEST_ONLY is set up to False
         skip_manifest(args, False)
     clr.print_info('Retrieving last tag')
-    last_tag = git_handler.get_last_tag_with_prefix(args['branch'], args['org'])
+    last_tag = git_handler.get_last_tag_with_prefix(args['branch'], args['org'], args['catalog'])
     if last_tag is not None:
         clr.print_success(f"Latest tag was found on the '{args['branch']}' branch: {last_tag}):")
         clr.print_info('Retrieving diff changes since last tag')

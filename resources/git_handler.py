@@ -5,12 +5,13 @@ import resources.printcolors as clr
 from settings import TAG_PREFIX, BASE_DIR
 
 
-def get_last_tag_with_prefix(branch: str, org: str) -> str:
+def get_last_tag_with_prefix(branch: str, org: str, catalog: str) -> str:
     """
-    Gets the last tag matching the prefix and branch.
+    Gets the last tag matching the prefix, catalog, org and branch.
 
-    :param org:
     :param branch:
+    :param org:
+    :param catalog:
     :return:
     """
     # Go to repository catalog
@@ -24,9 +25,10 @@ def get_last_tag_with_prefix(branch: str, org: str) -> str:
         if not tags or tags == ['']:
             return None
 
-        # Filter by tag prefix
-        clr.print_info(f"Searching tag with prefix {TAG_PREFIX}{org}")
-        filtered_tags = [tag for tag in tags if tag.startswith(TAG_PREFIX + org)]
+        # Filter by tag prefix (format: {TAG_PREFIX}{catalog}_{org}_{timestamp})
+        tag_prefix_with_catalog = f"{TAG_PREFIX}{catalog}_{org}_"
+        clr.print_info(f"Searching tag with prefix {tag_prefix_with_catalog}")
+        filtered_tags = [tag for tag in tags if tag.startswith(tag_prefix_with_catalog)]
         if not filtered_tags:
             return None
 
@@ -73,7 +75,7 @@ def get_changes_since_last_tag(last_tag: str, comms_cloud_catalog_name: str) -> 
         os.chdir(original_cwd)
 
 
-def add_tag_with_prefix(org) -> bool:
+def add_tag_with_prefix(org: str, catalog: str) -> bool:
     success = False
 
     original_cwd = os.getcwd()
@@ -83,12 +85,12 @@ def add_tag_with_prefix(org) -> bool:
         current_time = datetime.now()
 
         formatted_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
-        tag_name = f"{TAG_PREFIX + org}{formatted_time}"
+        tag_name = f"{TAG_PREFIX}{catalog}_{org}_{formatted_time}"
 
         # Creating and pushing tag
         subprocess.run(['git', 'tag', tag_name], check=True)
         subprocess.run(['git', 'push', 'origin', tag_name], check=True)
-        print(f"Tag '{tag_name}' was added and pushed '{org}'.")
+        print(f"Tag '{tag_name}' was added and pushed for catalog '{catalog}' and org '{org}'.")
         success = True
     except Exception as e:
         clr.print_error(f'Error during adding tag: {e}')
