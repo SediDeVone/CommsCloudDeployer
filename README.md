@@ -54,6 +54,14 @@ Check also the ```.parent``` in **BASE_DIR** variable in [settings.py](settings.
 # Add as many 'parent' as this file depth than main repo path
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 ```
+
+#### TAG_PREFIX
+The prefix used for git tags created by the deployer. Tags are created in the format `{TAG_PREFIX}{catalog}_{org}_{timestamp}`:
+```python
+TAG_PREFIX = "commsCloudDeployer"
+```
+Example tag: `commsCloudDeployercomms_cloud_catalog_QA_2026-01-09_10-30-00`
+
 ### Script Result
 
 That's the result of run the CommsCloudDeployer:
